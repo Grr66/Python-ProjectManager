@@ -1,0 +1,51 @@
+{% extends '__base__.html' %}
+
+{% block title %}项目信息查看{% endblock %}
+
+{% block beforehead %}
+<script>
+function getLocalTime(nS) {
+   return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+}
+</script>
+{% endblock %}
+
+{% block content %}
+    <table class="uk-table">
+        <caption>表格说明/Table caption：项目详细信息</caption>
+        <tbody>
+        <tr>
+            <td class="uk-width-2-10">项目编号：{{project.project_id }}</td>
+            <td class="uk-width-4-10">项目名称：{{project.project_name }}</td>
+            <td class="uk-width-1-10">项目级别：{{project.project_level }}</td>
+            <td class="uk-width-3-10">创建时间：{{project.created_at }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="vm" class="uk-width-2-3">
+        <div class="uk-alert uk-alert-danger uk-hidden"></div>
+        <div class="uk-form-row">
+            <label class="uk-form-label">项目编号:</label>
+            <div class="uk-form-controls">
+                <span v-text="{{ project.project_id }}"></span>
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <label class="uk-form-label">项目名称:</label>
+            <div class="uk-form-controls">
+                <span v-text="{{ project.project_name }}"></span>
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <label class="uk-form-label">项目级别:</label>
+            <div class="uk-form-controls">
+                <span v-text="{{ project.project_level }}"></span>
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-save"></i> 保存</button>
+            <a href="/manage/projects" class="uk-button"><i class="uk-icon-times"></i> 取消</a>
+        </div>
+    </div>
+
+{% endblock %}

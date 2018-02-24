@@ -1,0 +1,124 @@
+{% extends '__base__.html' %}
+
+{% block title %}修改项目信息{% endblock %}
+
+{% block beforehead %}
+
+<script>
+
+var
+    project_id = '{{ project_id }}',
+    action = '{{ action }}'; //在handlers处理函数的返回值中定义
+
+function initVM(project) {
+    var vm = new Vue({
+        el: '#vm',
+        data: project,
+        methods: {
+            submit: function (event) {
+                event.preventDefault();
+                var $form = $('#vm').find('form');
+                $form.postJSON(action, this.$data, function (err, r) {
+                    if (err) {
+                        $form.showFormError(err);
+                    }
+                    else {
+                        return location.assign('/manage/projects');
+                    }
+                });
+            }
+        }
+    });
+    $('#vm').show();
+}
+
+$(function () {
+    if (project_id) {
+        getJSON('/api/projects/get/' + project_id, function (err, project) {
+            if (err) {
+                return fatal(err);
+            }
+            $('#loading').hide();
+            initVM(project);
+        });
+    }
+    else {
+        $('#loading').hide();
+        initVM({
+            project_name: '',
+            project_id: '',
+            project_level: ''
+        });
+    }
+});
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id="error" class="uk-width-1-1">
+    </div>
+
+    <div id="loading" class="uk-width-1-1 uk-text-center">
+        <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> 正在加载...</span>
+    </div>
+
+    <div id="vm" class="uk-width-2-3">
+        <form v-on="submit: submit" class="uk-form uk-form-stacked">
+            <div class="uk-alert uk-alert-danger uk-hidden"></div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">项目编号:</label>
+                <div class="uk-form-controls">
+                    <input v-model="project_id" name="project_id" type="text" placeholder="项目编号" class="uk-width-1-1">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">项目名称:</label>
+                <div class="uk-form-controls">
+                    <input v-model="project_name"  name="project_name" placeholder="项目名称" class="uk-width-1-1" ></input>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">项目级别:</label>
+                <div class="uk-form-controls">
+                    <!--<input v-model="project_level"  name="project_level" placeholder="项目级别" class="uk-width-1-1" ></input>-->
+                    <select style="margin: 0px 5px;">
+                        <option value="">- Select Test -</option>
+                        <option value="overview.html">Overview</option>
+                    </select>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">项目经理:</label>
+                <div class="uk-form-controls">
+                    <input v-model="project_manager"  name="project_manager" placeholder="项目经理" class="uk-width-1-1" ></input>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">项目状态:</label>
+                <div class="uk-form-controls">
+                    <input v-model="project_status"  name="project_status" placeholder="项目状态" class="uk-width-1-1" ></input>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">项目阶段:</label>
+                <div class="uk-form-controls">
+                    <input v-model="project_stage"  name="project_stage" placeholder="项目阶段" class="uk-width-1-1" ></input>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">项目文档是否齐全:</label>
+                <div class="uk-form-controls">
+                    <input v-model="project_docFlag"  name="project_docFlag" placeholder="项目文档是否齐全" class="uk-width-1-1" ></input>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-save"></i> 保存</button>
+                <a href="/manage/projects" class="uk-button"><i class="uk-icon-times"></i> 取消</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

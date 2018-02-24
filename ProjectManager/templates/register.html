@@ -1,0 +1,115 @@
+{% extends '__base__.html' %}
+
+{% block title %}注册{% endblock %}
+
+{% block beforehead %}
+
+<!--
+总结一下具体流程，当用户在主页页面（就是前一章那个）点击注册时，会跳转到后缀为/register的URL,这时负责后缀/register的URL处理函数返回注册页面，当用户填写好消息并提交时，会先通过javascript，这段javascript功能有几个：
+1、初步检验信息（如检验邮箱格式是否正确，信息是否有留白，密码长度，两次密码是否一致等等，但不懂为何有些信息这里检验了一遍去到python的注册API那里又检验一次）。
+2、初次对密码进行摘要算法（后面python存储信息时又对密码进行了一次摘要算法，在作为cookie返回客户端时又进行了一次摘要算法，主要是为了安全）
+3、进行摘要算法过后，转去后缀为/api/users的URL，即此时才转到注册用户的API。
+4、注册用户的API运行完过后，重回首页。
+-->
+
+<script>
+    /*
+function validateEmail(email) {
+    var re = /^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$/;
+    return re.test(email.toLowerCase());
+}
+*/
+$(function () {
+    var vm = new Vue({
+        el: '#vm',
+        data: {
+            user_name: '',
+            user_id: '',
+            password1: '',
+            password2: ''
+        },
+        methods: {
+            submit: function (event) {
+                event.preventDefault();
+                var $form = $('#vm');
+                if (! this.user_name.trim()) {
+                    return $form.showFormError('请输入名字');
+                }
+                if (! this.user_id.trim()) {
+                    return $form.showFormError('请输入工号');
+                }
+                /*if (! validateEmail(this.email.trim().toLowerCase())) {
+                    return $form.showFormError('请输入正确的Email地址');
+                }*/
+                if (this.password1.length < 6) {
+                    return $form.showFormError('口令长度至少为6个字符');
+                }
+                if (this.password1 !== this.password2) {
+                    return $form.showFormError('两次输入的口令不一致');
+                }
+                //var email = this.email.trim().toLowerCase();
+                $form.postJSON('/api/register_user', {
+                    user_name: this.user_name.trim(),
+                    user_id: this.user_id.trim(),
+                    passwd: CryptoJS.SHA1(this.user_id + ':' + this.password1).toString()
+                }, function (err, r) {
+                    if (err) {
+                        return $form.showFormError(err);
+                    }
+                    var r=confirm("注册成功!点击确定跳转登陆，点击取消再次注册。");
+                    if (r==true)
+                    {
+                       return location.assign('/login');
+                    }
+                    else
+                    {
+                       return location.assign('/register');
+                    }
+
+                });
+            }
+        }
+    });
+    $('#vm').show();
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-2-3">
+        <h1>欢迎注册！</h1>
+        <form id="vm" v-on="submit: submit" class="uk-form uk-form-stacked">
+            <div class="uk-alert uk-alert-danger uk-hidden"></div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">名字:</label>
+                <div class="uk-form-controls">
+                    <input v-model="user_name" type="text" maxlength="10" placeholder="名字" class="uk-width-1-1">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">工号:</label>
+                <div class="uk-form-controls">
+                    <input v-model="user_id" type="text" maxlength="6" placeholder="工号" class="uk-width-1-1">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">输入口令:</label>
+                <div class="uk-form-controls">
+                    <input v-model="password1" type="password" maxlength="8" placeholder="输入口令" class="uk-width-1-1">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">重复口令:</label>
+                <div class="uk-form-controls">
+                    <input v-model="password2" type="password" maxlength="8" placeholder="重复口令" class="uk-width-1-1">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-user"></i> 注册</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

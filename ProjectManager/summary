@@ -1,0 +1,6 @@
+服务端app启动服务
+打开登陆页面：
+浏览器http://127.0.0.1:8000/login请求，如何确定是get还是post还是json?
+一个请求在服务端收到后的方法调用顺序是:app.logger_factory->app.response_factory->web_frame.RequestHandler().__call__->get或post->handler
+
+登陆提交：

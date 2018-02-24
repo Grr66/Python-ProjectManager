@@ -1,0 +1,99 @@
+{% extends '__base__.html' %}
+
+{% block title %}项目管理{% endblock %}
+
+{% block beforehead %}
+
+<script>
+
+function initVM(data) {
+    var vm = new Vue({
+        el: '#vm',
+        data: {
+            projects: data.projects,
+            page: data.page
+        },
+        methods: {
+            edit_project: function (project) {
+                location.assign('/manage/projects/modify/'+project.project_id);
+            },
+            delete_project: function (project) {
+                if (confirm('确认要删除“' + project.project_name + '”？删除后不可恢复！')) {
+                    postJSON('/api/projects/' + project.project_id + '/delete', function (err, r) {
+                        if (err) {
+                            return alert(err.message || err.error || err);
+                        }
+                        {#refresh();#}
+                        location.assign('/manage/projects');
+                    });
+                }
+            }
+        }
+    });
+    $('#vm').show();
+}
+
+$(function () {
+    {#this.confirm('hello')#}
+    getJSON('/api/projects/show', {
+        page: {{ page_index }}
+    }, function (err, results) {
+        if (err) {
+            return fatal(err);
+        }
+        $('#loading').hide();
+        initVM(results);
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id="error" class="uk-width-1-1">
+    </div>
+
+    <div id="loading" class="uk-width-1-1 uk-text-center">
+        <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> 正在加载...</span>
+    </div>
+    <div id="vm" class="uk-width-1-1">
+        <a href="/manage/projects/create" class="uk-button uk-button-primary"><i class="uk-icon-plus"></i> 新项目</a>
+
+        <table class="uk-table uk-table-hover">
+            <thead>
+                <tr>
+                    <th class="uk-width-2-10">项目编号</th>
+                    <th class="uk-width-4-10">项目名称</th>
+                    <th class="uk-width-1-10">项目级别</th>
+                    <th class="uk-width-2-10">创建时间</th>
+                    <th class="uk-width-1-10">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-repeat="project: projects" >
+                    <td>
+                        <!--<a target="_blank" v-attr="href: '/project/'+project.project_id" v-text="project.project_id"></a>-->
+                        <a href="#0" v-on="click: edit_project(project)" v-text="project.project_id"></a>
+                    </td>
+                    <td>
+                        <span v-text="project.project_name"></span>
+                    </td>
+                    <td>
+                        <span v-text="project.project_level"></span>
+                    </td>
+                    <td>
+                        <span v-text="project.created_at.toDateTime()"></span>
+                    </td>
+                    <td>
+                        <a href="#0" v-on="click: edit_project(project)"><i class="uk-icon-edit"></i></a>
+                        <a href="#0" v-on="click: delete_project(project)"><i class="uk-icon-trash-o"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div v-component="pagination" v-with="page"></div>
+    </div>
+
+{% endblock %}

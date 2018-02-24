@@ -1,0 +1,10 @@
+1 app.py          web应用骨架:起服务，加载jinja2模板
+2 templates文件夹 模板文件夹：存放jinja2模板
+3 orm.py          对象模型关系处理：数据库连接，增删改查封装
+4 config.py       配置存储读取：存储数据库连接信息，把config_default.py作为开发环境的标准配置，把config_override.py作为生产环境的标准配置，我们就可以既方便地在本地开发，又可以随时把应用部署到服务器上。
+                                应用程序读取配置文件需要优先从config_override.py读取。为了简化读取配置文件，可以把所有配置读取到统一的config.py中
+5 web_frame.py    web框架：处理get/post请求，url参数获取以及处理调用
+6 apis.py         异常：定义一些异常报错
+7 static文件夹    静态资源文件夹：保存静态资源
+8 models.py       模型定义：用户
+9 orm.py          增加model类
