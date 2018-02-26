@@ -15,7 +15,7 @@ from web_frame import get, post
 
 
 #------------------------------------------------------------------------
-#主页面
+#1主页面
 @get('/manage/projects')
 def manage_projects(*,page='1'):
     return {
@@ -23,18 +23,32 @@ def manage_projects(*,page='1'):
         'page_index': get_page_index(page)
     }
 
-#登陆页面
+#1登陆页面
 @get('/login')
 def login():
     return {
         '__template__': 'login.html'
     }
 
-#注册页面
+#1注册页面
 @get('/register')
 def register():
     return {
         '__template__':'register.html'
+    }
+
+#1概要设计页面
+@get('/general_design')
+def general_design():
+    return {
+        '__template__': 'general_design.html'
+    }
+
+#1详细设计页面
+@get('/detail_design')
+def detail_design():
+    return {
+        '__template__': 'detail_design.html'
     }
 
 COOKIE_NAME = 'awesession'
@@ -87,7 +101,7 @@ def cookie2user(cookie_str):
         logging.exception(e)
         return None
 
-#制作用户注册api
+#2制作用户注册api
 @post('/api/register_user')
 async def api_register_usesr(*,user_id,user_name,passwd):
     if not user_name or not user_name.strip():#如果名字是空格或没有返错，这里感觉not name可以省去，因为在web框架中的RequsetHandler已经验证过一遍了
@@ -115,7 +129,7 @@ async def api_register_usesr(*,user_id,user_name,passwd):
     return r
 
 
-#验证登陆
+#2验证登陆
 @post('/api/login')
 def api_login(*,user_id,passwd):
     #如果user_id和passwd为空，说明有错误
@@ -153,7 +167,7 @@ def api_login(*,user_id,passwd):
     r.body = json.dumps(user,ensure_ascii=False).encode('utf-8')
     return r
 
-# 登出操作
+# 2登出操作
 @get('/logout')
 def logout(request):
     referer = request.headers.get('Referer')
@@ -164,16 +178,16 @@ def logout(request):
 
     return r
 
+#1 新建项目页面
 @get('/manage/projects/create')
 def manage_create_projects():
-    # 新建项目页面
     return {
         '__template__': 'manage_project_create.html',
         'id': '',
         'action': '/api/projects/create'  # 对应HTML页面中VUE的action名字
     }
 
-#创建项目
+#2创建项目
 @post('/api/projects/create')
 def api_create_project(request, *, project_id,project_name,project_level):
     # 只有管理员可以写博客
@@ -203,7 +217,7 @@ def api_create_project(request, *, project_id,project_name,project_level):
     yield from project.save()
     return project
 
-#展示项目首页
+#2展示项目首页
 @get('/api/projects/show')
 def api_show_projects(*,request, page='1'):
     # 获取项目信息
@@ -226,7 +240,7 @@ def get_page_index(page_str):
         p = 1
     return p
 
-#根据项目编号查看一条信息
+#1根据项目编号查看一条信息
 @get('/project/{project_id}')
 def get_project(project_id):
     # 根据博客id查询该条信息
@@ -244,7 +258,7 @@ def get_project(project_id):
         #'comments': comments
     }
 
-#修改一条项目信息
+#1修改一条项目信息
 @get('/manage/projects/modify/{project_id}')
 def manage_modify_project(project_id):
     # 修改项目信息的页面
@@ -253,10 +267,10 @@ def manage_modify_project(project_id):
         'project_id': project_id,
         'action': '/api/projects/modify'
     }
-
+# 2修改一条项目信息
 @post('/api/projects/modify')
 def api_modify_project(request, *, project_id,project_name,project_level,project_status,project_stage,project_docFlag,**kwargs):
-    # 修改一条项目信息
+
     logging.info("====>api_modify_project:修改的项目编号为：%s", project_id)
     # name，id,level 不能为空
     if not project_name or not project_name.strip():
@@ -278,16 +292,17 @@ def api_modify_project(request, *, project_id,project_name,project_level,project
     yield from project_r.update()
     return project_r
 
-#修改的时候，会先调查询，反显
+#2修改的时候，会先调查询，反显
 @get('/api/projects/get/{project_id}')
 def api_get_project(*, project_id):
     # 获取某条项目的信息
     project = yield from Project.find(project_id)
     return project
 
+# 2删除一条项目信息
 @post('/api/projects/{project_id}/delete')
 def api_delete_project(project_id, request):
-    # 删除一条项目信息
+
     logging.info("====>api_delete_project:删除的项目ID为：%s" % project_id)
     # # 先检查是否是管理员操作，只有管理员才有删除评论权限
     # check_admin(request)
@@ -300,7 +315,7 @@ def api_delete_project(project_id, request):
     yield from p.remove()
     return dict(project_id=project_id)
 
-#用户信息查看模块
+#2用户信息查看模块
 @get('/api/users')
 def api_get_users(page='1'):
     # 返回所有的用户信息jason格式
@@ -316,12 +331,9 @@ def api_get_users(page='1'):
         u.passwd = '******'
     return dict(page=p, users=users)
 
-
-
-
+#1 查看所有用户
 @get('/manage/users')
 def manage_users(*, page='1'):
-    # 查看所有用户
     return {
         '__template__': 'manage_users.html',
         'page_index': get_page_index(page)

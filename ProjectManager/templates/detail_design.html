@@ -1,0 +1,249 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    {% block meta %}<!-- block meta  -->{% endblock %}
+    <title>{% block title %} ? {% endblock %} - Project Manager</title>
+    <link rel="stylesheet" href="/static/css/uikit.min.css">
+    <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+    <link rel="stylesheet" href="/static/css/awesome.css"/>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/sha1.min.js"></script>
+    <script src="/static/js/uikit.min.js"></script>
+    <script src="/static/js/sticky.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/awesome.js"></script>
+    {% block beforehead %}<!-- before head  -->{% endblock %}
+</head>
+<body>
+
+<nav class="uk-navbar uk-navbar-attached uk-margin-bottom">
+    <div class="uk-container uk-container-center">
+        <a href="/manage/projects" class="uk-navbar-brand">Project Manager</a>
+        <ul class="uk-navbar-nav">
+            <!--注释掉li data-url="blogs"><a href="/"><i class="uk-icon-home"></i> 日志</a></--li>
+            <!--这里放后台管理的连接方便测试-->
+            <li><a href="http://127.0.0.1:8000/manage/projects"><i class="uk-icon-book"></i> 项目管理</a></li>
+            <li><a href="http://127.0.0.1:8000/manage/users"><i class="uk-icon-book"></i> 用户管理</a></li>
+            <li><a href="/general_design"><i class="uk-icon-book"></i> 系统概要设计</a></li>
+            <li><a href="/detail_design"><i class="uk-icon-book"></i> 系统详细设计</a></li>
+            <!--注释掉
+            <li><a target="_blank" href="http://127.0.0.1:9000/manage/comments"><i class="uk-icon-book"></i> 评论管理</a></li>
+            <li><a target="_blank" href="https://github.com/KaimingWan/PureBlog"><i class="uk-icon-code"></i> 源码</a></li>
+            -->
+        </ul>
+        <div class="uk-navbar-flip">
+            <ul class="uk-navbar-nav">
+                {% if __user__ %}
+                    <li class="uk-parent" data-uk-dropdown>
+                        <a href="#0"><i class="uk-icon-user"></i> {{ __user__.user_name }}</a>
+                        <div class="uk-dropdown uk-dropdown-navbar">
+                            <ul class="uk-nav uk-nav-navbar">
+                                <li><a href="/logout"><i class="uk-icon-sign-out"></i> 登出</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                {% else %}
+                    <li><a href="/login"><i class="uk-icon-sign-in"></i> 登陆</a></li>
+                    <li><a href="/register"><i class="uk-icon-edit"></i> 注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<h1 align="center" class="root">
+    <a name="72gnpnjlas7u6e27vgnnja4bjl">PythonWeb:ProjectManager</a>
+</h1>
+<div align="center" class="globalOverview">
+    <img src="/static/img/PythonWeb ProjectManager.jpg"></div>
+<h2 class="topic">
+    <a name="0idvk854urtrbu9s2a5ivqa6mk">框架</a>
+</h2>
+<div class="overview">
+    <img src="/static/img/%E6%A1%86%E6%9E%B6.jpg"></div>
+<h3 class="topic">
+    <a name="6bq1k5dml6opbc2mge1pm5n7fm">&nbsp;app.py: HTTP服务器以及处理HTTP请求；拦截器、jinja2模板、URL处理函数注册等</a>
+</h3>
+<div class="overview">
+    <img src="/static/img/app.py  HTTP%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BB%A5%E5%8F%8A%E5%A4%84%E7%90%86HTTP%E8%AF%B7%E6%B1%82%EF%BC%9B%E6%8B%A6%E6%88%AA%E5%99%A8%E3%80%81jinja2%E6%A8%A1%E6%9D%BF%E3%80%81URL%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E6%B3%A8%E5%86%8C%E7%AD%89.jpg">
+</div>
+<h3 class="topic">
+    <a name="2bv0vf7066f1km01ieql7d4c8m">&nbsp;&nbsp;处理一个请求的过程即为：&#13;
+        1.app.py中注册所有处理函数、初始化jinja2、添加静态文件路径&#13;
+        &#13;
+        2.创建服务器监听线程&#13;
+        &#13;
+        3.收到一个request请求&#13;
+        &#13;
+        4.经过几个拦截器(middlewares)的处理(app.py中的app = web.Application..这条语句指定)&#13;
+        &#13;
+        5.调用RequestHandler实例中的__call__方法；再调用__call__方法中的post或者get方法&#13;
+        &#13;
+        6.从已经注册过的URL处理函数中(handler.py)中获取对应的URL处理方法</a>
+</h3>
+<h3 class="topic">
+    <a name="75njiu37jh844q9t62tqn31ked">&nbsp;orm.py: ORM框架，对象模型关系处理：数据库连接，增删改查封装</a>
+</h3>
+<div class="overview">
+    <img src="/static/img/orm.py  ORM%E6%A1%86%E6%9E%B6%EF%BC%8C%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E5%85%B3%E7%B3%BB%E5%A4%84%E7%90%86%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%EF%BC%8C%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E5%B0%81%E8%A3%85.jpg">
+</div>
+<h3 class="topic">
+    <a name="6vsqo4jadlnekf36f2t3og6cin">&nbsp;&nbsp;orm.py实现思路:&#13;
+        1.实现ModelMetaclass，主要完成类属性域和特殊变量直接的映射关系，方便Model类中使用。同时可以定义一些默认的SQL处理语句&#13;
+        &#13;
+        2.实现Model类,包含基本的get,set方法用于获取和设置变量域的值。同时实现相应的SQL处理函数（这时候可以利用ModelMetaclass自动根据类实例封装好的特殊变量)&#13;
+        &#13;
+        3.实现基本的数据库类型类，在应用层用户只要使用这种数据库类型类即可，避免直接使用数据的类型增加问题复杂度&#13;
+    </a>
+</h3>
+<h3 class="topic">
+    <a name="4tk3d03gvqe07v5badmo4suk73">&nbsp;web_frame.py: 封装aiohttp，即写个装饰器更好的从Request对象获取参数和返回Response对象</a>
+</h3>
+<div class="overview">
+    <img src="/static/img/web_frame.py  %E5%B0%81%E8%A3%85aiohttp%EF%BC%8C%E5%8D%B3%E5%86%99%E4%B8%AA%E8%A3%85%E9%A5%B0%E5%99%A8%E6%9B%B4%E5%A5%BD%E7%9A%84%E4%BB%8ERequest%E5%AF%B9%E8%B1%A1%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E5%92%8C%E8%BF%94%E5%9B%9EResponse%E5%AF%B9%E8%B1%A1.jpg">
+</div>
+<h3 class="topic">
+    <a name="7uamadsjnptft9fcvl0snoojkg">&nbsp;&nbsp;web框架实现思路:&#13;
+        web框架在此处主要用于对aiohttp库的方法做更高层次的封装，用于抽离一些可复用的操作简化过程。主要涉及的封装内容为：&#13;
+        1.定义装饰器@get()和@post()用与自动获取URL路径中的基本信息&#13;
+        2.定义RequestHandler类，该类的实例对象获取完整的URL参数信息并且调用对应的URL处理函数（类中的方法）&#13;
+        3.定义add_router方法用于注册对应的方法，即找到合适的fn给app.router.add_route()方法。该方法是aiohttp提供的接口，用于指定URL处理函数&#13;
+    </a>
+</h3>
+<h3 class="topic">
+    <a name="05kotv7gnkhjdlqve4ef71aia6">&nbsp;apis.py: 定义几个错误异常类和Page类用于分页</a>
+</h3>
+<h3 class="topic">
+    <a name="5r9at63g2fsr4d2cc1gv1al716">&nbsp;config_default.py: 默认的配置文件信息</a>
+</h3>
+<h3 class="topic">
+    <a name="2k3ch8spud8nb5d532570g2f94">&nbsp;config_override.py: 自定义的配置文件信息</a>
+</h3>
+<h3 class="topic">
+    <a name="4ghg28np8jg3iib5jmt0cq1hrj">&nbsp;config.py: 默认和自定义配置文件合并</a>
+</h3>
+<h2 class="topic">
+    <a name="34acbl2k24b5kpaso3hedmfm2t">后端</a>
+</h2>
+<div class="overview">
+    <img src="/static/img/%E5%90%8E%E7%AB%AF.jpg"></div>
+<h3 class="topic">
+    <a name="6p1mnbjddr7r1ppoc663bouh39">&nbsp;models.py :定义需要的project类，user类用Model表示出来</a>
+</h3>
+<h3 class="topic">
+    <a name="1j2qlkisahmfj9a3psei4nsroc">&nbsp;handlers.py：对于get/post请求的处理</a>
+</h3>
+<div class="overview">
+    <img src="/static/img/handlers.py%EF%BC%9A%E5%AF%B9%E4%BA%8Eget post%E8%AF%B7%E6%B1%82%E7%9A%84%E5%A4%84%E7%90%86.jpg">
+</div>
+<h3 class="topic">
+    <a name="2ksg3h1ft620gk50aprh936c0g">&nbsp;&nbsp;页面处理</a>
+</h3>
+<div class="overview">
+    <img src="/static/img/%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86.jpg"></div>
+<h3 class="topic">
+    <a name="32k4rk54iram9ha1e4gml3ltbi">&nbsp;&nbsp;&nbsp;登陆页面：@get('/login')</a>
+</h3>
+<h3 class="topic">
+    <a name="57q6mcv99ss5nakig4sga5og03">&nbsp;&nbsp;&nbsp;注册页面：@get('/register')</a>
+</h3>
+<h3 class="topic">
+    <a name="5p73qvdjtufk59hn90rqa7esl4">&nbsp;&nbsp;&nbsp;主页面：@get('/manage/projects')</a>
+</h3>
+<h3 class="topic">
+    <a name="6qbdmnh6qr4am6j26mq9f4css3">&nbsp;&nbsp;&nbsp;新建项目页面：@get('/manage/projects/create')</a>
+</h3>
+<h3 class="topic">
+    <a name="518qvnc5t3p61ecou5ln7v4ht1">&nbsp;&nbsp;&nbsp;项目详情页面：@get('/project/{project_id}')</a>
+</h3>
+<h3 class="topic">
+    <a name="6pelr75r0mknlpe5m98egbmpjj">&nbsp;&nbsp;&nbsp;修改项目页面：@get('/manage/projects/modify/{project_id}')</a>
+</h3>
+<h3 class="topic">
+    <a name="581gmjtbp29cu8i20nfdc1dheb">&nbsp;&nbsp;&nbsp;用户查看页面：@get('/manage/users')</a>
+</h3>
+<h3 class="topic">
+    <a name="7jmtqdkte5bfsl33p55g10b0ao">&nbsp;&nbsp;api处理</a>
+</h3>
+<div class="overview">
+    <img src="/static/img/api%E5%A4%84%E7%90%86.jpg"></div>
+<h3 class="topic">
+    <a name="01sjfgrb60pm1l2lgb8sg97nar">&nbsp;&nbsp;&nbsp;用户登录：@post('/api/login')</a>
+</h3>
+<div class="overview">
+    <img src="/static/img/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%EF%BC%9A@post(' api login').jpg">
+</div>
+<h3 class="topic">
+    <a name="2g16b359eqoobjvou1svi0v789">&nbsp;&nbsp;&nbsp;&nbsp;会调用user2cookie：将用户名、密码、过期时间、key值拼接成字符串，并进行sha1加密</a>
+</h3>
+<h3 class="topic">
+    <a name="2u52r5oa30rvbjj1pm7rfqqlbs">&nbsp;&nbsp;&nbsp;用户注册：@post('/api/register_user')</a>
+</h3>
+<h3 class="topic">
+    <a name="011okvev1fod2d0tifcu5sm1v9">&nbsp;&nbsp;&nbsp;用户登出：@get('/logout')</a>
+</h3>
+<h3 class="topic">
+    <a name="5gie6el2pgqbmf9m8iap21ds3b">&nbsp;&nbsp;&nbsp;主页信息展示：@get('/api/projects/show')</a>
+</h3>
+<h3 class="topic">
+    <a name="532hkponj7i8cdvhhbqvp0r3ho">&nbsp;&nbsp;&nbsp;新建项目信息：@post('/api/projects/create')</a>
+</h3>
+<h3 class="topic">
+    <a name="37elp7mdmff6uam1mma9rdbrat">&nbsp;&nbsp;&nbsp;修改项目信息：@post('/api/projects/modify')</a>
+</h3>
+<h3 class="topic">
+    <a name="05nf52pp8c8cfheusluggpvn1t">&nbsp;&nbsp;&nbsp;单条项目信息：@get('/api/projects/get/{project_id}')</a>
+</h3>
+<h3 class="topic">
+    <a name="33e2qfimbi5838n76nupkup4jr">&nbsp;&nbsp;&nbsp;删除项目信息：@post('/api/projects/{project_id}/delete')</a>
+</h3>
+<h3 class="topic">
+    <a name="79fktjau97nup5il103fcp95l1">&nbsp;&nbsp;&nbsp;用户信息查看：@get('/api/users')</a>
+</h3>
+<h2 class="topic">
+    <a name="37augv0cscbnm4bdtjd54sggd4">前端</a>
+</h2>
+<div class="overview">
+    <img src="/static/img/%E5%89%8D%E7%AB%AF.jpg"></div>
+<h3 class="topic">
+    <a name="1lkj1vll974kpkep62a97o0upj">&nbsp;主页面：manage_projects.html</a>
+</h3>
+<h3 class="topic">
+    <a name="4rom19175phma8t2pmnvqh8086">&nbsp;登陆页面：login.html</a>
+</h3>
+<h3 class="topic">
+    <a name="3jrufr92husivshocrailugpr2">&nbsp;注册页面：register.html</a>
+</h3>
+<h3 class="topic">
+    <a name="0d8vg24v0069aa00rtepvlvueg">&nbsp;新建项目页面：manage_project_create.html</a>
+</h3>
+<h3 class="topic">
+    <a name="2ifivacuo2jmn8g39lfi5pbuhk">&nbsp;项目详情页面：manage_project_query.html</a>
+</h3>
+<h3 class="topic">
+    <a name="1b277hekaue88rgqus7imog52v">&nbsp;修改项目页面：manage_project_modify.html</a>
+</h3>
+<h3 class="topic">
+    <a name="134e1cunr703r7a9n4qtuqja24">&nbsp;用户查看页面：manage_users.html</a>
+</h3>
+
+<div class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
+    <div class="uk-container uk-container-center uk-text-center">
+        <div class="uk-panel uk-margin-top uk-margin-bottom">
+            <!--
+            <p>
+                <a target="_blank" href="http://weibo.com/kaimingwan" class="uk-icon-button uk-icon-weibo"></a>
+                <a target="_blank" href="https://github.com/kaimingwan" class="uk-icon-button uk-icon-github"></a>
+                <a target="_blank" href="about:blank" class="uk-icon-button uk-icon-linkedin-square"></a>
+                <a target="_blank" href="about:blank" class="uk-icon-button uk-icon-twitter"></a>
+            </p>
+            -->
+            <p>Powered by Zkid. Copyright &copy; 2018. </p>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>

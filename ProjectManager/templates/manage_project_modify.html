@@ -84,9 +84,10 @@ $(function () {
                 <label class="uk-form-label">项目级别:</label>
                 <div class="uk-form-controls">
                     <!--<input v-model="project_level"  name="project_level" placeholder="项目级别" class="uk-width-1-1" ></input>-->
-                    <select style="margin: 0px 5px;">
-                        <option value="">- Select Test -</option>
-                        <option value="overview.html">Overview</option>
+                    <select v-model="project_level" name="project_level">
+                        <option value="A">A级</option>
+                        <option value="B">B级</option>
+                        <option value="C">C级</option>
                     </select>
                 </div>
             </div>
@@ -99,19 +100,34 @@ $(function () {
             <div class="uk-form-row">
                 <label class="uk-form-label">项目状态:</label>
                 <div class="uk-form-controls">
-                    <input v-model="project_status"  name="project_status" placeholder="项目状态" class="uk-width-1-1" ></input>
+{#                    <input v-model="project_status"  name="project_status" placeholder="项目状态" class="uk-width-1-1" ></input>#}
+                    <select v-model="project_status"  name="project_status" >
+                        <option value="1">启动</option>
+                        <option value="2">暂停</option>
+                    </select>
                 </div>
             </div>
             <div class="uk-form-row">
                 <label class="uk-form-label">项目阶段:</label>
                 <div class="uk-form-controls">
-                    <input v-model="project_stage"  name="project_stage" placeholder="项目阶段" class="uk-width-1-1" ></input>
+{#                    <input v-model="project_stage"  name="project_stage" placeholder="项目阶段" class="uk-width-1-1" ></input>#}
+                    <select v-model="project_stage"  name="project_stage">
+                        <option value="1">需求分析</option>
+                        <option value="2">开发</option>
+                        <option value="3">技术测试</option>
+                        <option value="4">准生产测试</option>
+                        <option value="5">投产</option>
+                    </select>
                 </div>
             </div>
             <div class="uk-form-row">
                 <label class="uk-form-label">项目文档是否齐全:</label>
                 <div class="uk-form-controls">
-                    <input v-model="project_docFlag"  name="project_docFlag" placeholder="项目文档是否齐全" class="uk-width-1-1" ></input>
+{#                    <input v-model="project_docFlag"  name="project_docFlag" placeholder="项目文档是否齐全" class="uk-width-1-1" ></input>#}
+                    <select v-model="project_docFlag"  name="project_docFlag">
+                        <option value="1">是</option>
+                        <option value="2">否</option>
+                    </select>
                 </div>
             </div>
             <div class="uk-form-row">

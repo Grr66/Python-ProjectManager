@@ -35,12 +35,14 @@
 <body>
     <nav class="uk-navbar uk-navbar-attached uk-margin-bottom">
         <div class="uk-container uk-container-center">
-            <a href="/" class="uk-navbar-brand">Project Manager</a>
+            <a href="/manage/projects" class="uk-navbar-brand">Project Manager</a>
             <ul class="uk-navbar-nav">
                 <!--注释掉li data-url="blogs"><a href="/"><i class="uk-icon-home"></i> 日志</a></--li>
                 <!--这里放后台管理的连接方便测试-->
                 <li><a  href="http://127.0.0.1:8000/manage/projects"><i class="uk-icon-book"></i> 项目管理</a></li>
                 <li><a  href="http://127.0.0.1:8000/manage/users"><i class="uk-icon-book"></i> 用户管理</a></li>
+                <li><a  href="/general_design"><i class="uk-icon-book"></i> 系统概要设计</a></li>
+                <li><a  href="/detail_design"><i class="uk-icon-book"></i> 系统详细设计</a></li>
                 <!--注释掉
                 <li><a target="_blank" href="http://127.0.0.1:9000/manage/comments"><i class="uk-icon-book"></i> 评论管理</a></li>
                 <li><a target="_blank" href="https://github.com/KaimingWan/PureBlog"><i class="uk-icon-code"></i> 源码</a></li>
@@ -75,6 +77,7 @@
         </div>
     </div>
 
+{#    <div class="tm-footer" style="background-color:#eee; border-top:1px solid #ccc;">#}
     <div class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
         <div class="uk-container uk-container-center uk-text-center">
             <div class="uk-panel uk-margin-top uk-margin-bottom">
